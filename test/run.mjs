@@ -1,6 +1,7 @@
 // Live test against the real Framer origin, through the local stand-in for Vercel.
 import assert from 'node:assert/strict';
 import { startServer } from './local-server.mjs';
+import { runVideoTests } from './video-cache.mjs';
 
 const PORT = 8787;
 const P = `http://localhost:${PORT}`;
@@ -80,6 +81,8 @@ await check('gzip is applied to HTML when accepted', async () => {
   assert.equal(r.headers.get('vary'), 'Accept-Encoding');
   assert.match(await r.text(), /<html/i);
 });
+
+await runVideoTests(check);
 
 for (const [s, n] of results) console.log(s, n);
 server.close();

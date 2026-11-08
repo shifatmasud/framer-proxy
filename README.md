@@ -19,6 +19,12 @@ Errors, redirects and partial (Range) responses are never cached.
 - `vercel.json`: sends every path to the function.
 - `test/`: live checks (HTML, JS, image, Range, 404, POST, HEAD, gzip).
 
+## Video copy (saves Framer bandwidth on video)
+- The first Range request for a video goes to Framer as before; in the background the proxy fetches the whole file once and keeps it in the Vercel edge cache.
+- Later Range requests (seeks, replays) are answered from that copy with 206, so Framer is not billed for them.
+- Files over `VIDEO_CACHE_MAX_BYTES` (default 512 MB) are not copied. A file that fails to copy is not retried for 24 hours.
+- Unverified until deployed: whether the edge cache keeps a copy this large. If it does not, video falls back to pass-through (no saving, no breakage).
+
 ## Limits
-- Range requests (video seeks) pass through to Framer each time; they are not cached at the edge.
+- Video seeks are served from the copy only if the edge cache keeps it; otherwise they pass through to Framer.
 - Every non-hashed `200` page is cached for 5 minutes, so a republish shows up within about 5 minutes.

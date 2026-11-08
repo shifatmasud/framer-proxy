@@ -3,13 +3,17 @@ import http from 'node:http';
 import { Readable } from 'node:stream';
 import handler from '../api/proxy.js';
 
+// Background work the handler hands to waitUntil lands here; tests await it.
+export const pending = [];
+const context = { waitUntil: (p) => pending.push(p) };
+
 export function startServer(port) {
   const server = http.createServer(async (req, res) => {
     const u = new URL(req.url, `http://${req.headers.host}`);
     const target = `http://${req.headers.host}/api/proxy?__p=${encodeURIComponent(u.pathname)}${u.search ? '&' + u.search.slice(1) : ''}`;
     const headers = new Headers();
     for (const [k, v] of Object.entries(req.headers)) if (v) headers.set(k, Array.isArray(v) ? v.join(', ') : v);
-    const r = await handler(new Request(target, { method: req.method, headers }));
+    const r = await handler(new Request(target, { method: req.method, headers }), context);
     const out = {};
     r.headers.forEach((v, k) => { out[k] = v; });
     res.writeHead(r.status, out);

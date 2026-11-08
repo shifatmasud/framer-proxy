@@ -4,12 +4,11 @@ Serves a Framer site through your own Vercel edge cache, so repeat visits stop p
 HTML is cached 5 minutes (then served stale while it refreshes), hashed JS, CSS, images and fonts are cached for a year.
 Errors, redirects and partial (Range) responses are never cached.
 
-## Setup (5 lines)
+## Setup (4 lines)
 1. In Vercel: Add New Project, import this GitHub repo `shifatmasud/framer-proxy`, and keep the defaults.
 2. Environment Variables: set `FRAMER_ORIGIN` to your Framer site, e.g. `https://shifatmasud.framer.website` (no trailing slash).
 3. Click Deploy.
 4. Project Settings, Domains: add your domain (optional; the `*.vercel.app` URL works too).
-5. Second Framer site: also set `FRAMER_HOST_2` (the domain that serves it) and `FRAMER_ORIGIN_2`, and attach that domain to the same project.
 
 ## Test locally
     npm test          # runs against the live Framer origin via a local stand-in for Vercel

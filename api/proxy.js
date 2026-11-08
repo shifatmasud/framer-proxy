@@ -229,12 +229,7 @@ export default async function handler(request, context) {
   if (request.method === 'GET' && status !== 206 && TEXT_TYPES.test(ctype) && up.body) {
     const text = rewriteText(await up.text(), proxyOrigin, siteOrigin);
     const bytes = new TextEncoder().encode(text);
-    const ae = request.headers.get('accept-encoding') || '';
-    if (/\bgzip\b/.test(ae) && typeof CompressionStream !== 'undefined' && bytes.length > 1024) {
-      headers.set('content-encoding', 'gzip');
-      const gz = new Blob([bytes]).stream().pipeThrough(new CompressionStream('gzip'));
-      return new Response(gz, { status, headers });
-    }
+    // Vercel's edge compresses text responses itself; sending our own gzip here came out as raw bytes in the browser.
     headers.set('content-length', String(bytes.length));
     return new Response(bytes, { status, headers });
   }

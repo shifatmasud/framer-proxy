@@ -1,0 +1,13 @@
+{
+  "name": "framer-proxy",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Edge cache proxy for a Framer site on Vercel",
+  "scripts": {
+    "test": "node test/run.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

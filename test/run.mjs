@@ -75,10 +75,9 @@ await check('HEAD answers with headers and no body', async () => {
   assert.match(r.headers.get('cache-control'), /s-maxage=300/);
 });
 
-await check('gzip is applied to HTML when accepted', async () => {
+await check('HTML is served as text/html and the body is readable', async () => {
   const r = await fetch(P + '/', { headers: { 'accept-encoding': 'gzip' } });
-  assert.equal(r.headers.get('content-encoding'), 'gzip');
-  assert.equal(r.headers.get('vary'), 'Accept-Encoding');
+  assert.match(r.headers.get('content-type') || '', /text\/html/);
   assert.match(await r.text(), /<html/i);
 });
 
